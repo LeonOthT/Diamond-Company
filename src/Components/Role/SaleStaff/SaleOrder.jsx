@@ -236,7 +236,7 @@ export const SaleOrder = () => {
         pageSizeOptions={[5, 10]}
         onRowClick={handleRowClick}
       />
-      <SaleOrderDetailModal open={modalOpen} handleClose={handleCloseModal} orderId={selectedOrder} />
+        <SaleOrderDetailModal open={modalOpen} handleClose={handleCloseModal} orderId={selectedOrder} />
     </div>
   );
 };

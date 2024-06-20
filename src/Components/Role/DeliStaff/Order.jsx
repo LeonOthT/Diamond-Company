@@ -4,16 +4,21 @@ import { DataGrid } from '@mui/x-data-grid';
 import { TextField, Button } from '@mui/material';
 import { StaffActionContext } from '../SaleStaff/StaffActionProvider';
 import axios from 'axios';
+import DeliStaffDetailModal from './DeliStaffDetailModal';
 
 export const Order = () => {
   const { confirmedOrders, setConfirmedOrders } = useContext(StaffActionContext);
+  const [rows, setRows] = useState([]);
+  const [searchDate, setSearchDate] = useState('');
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedOrderId, setSelectedOrderId] = useState(null);
 
   useEffect(() => {
     const storedConfirmedOrders = localStorage.getItem('confirmedOrders');
     if (storedConfirmedOrders) {
       setConfirmedOrders(JSON.parse(storedConfirmedOrders));
     }
-  }, []);
+  }, [setConfirmedOrders]);
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -31,14 +36,14 @@ export const Order = () => {
   const isOrderConfirmed = (orderId) => confirmedOrders.includes(orderId);
 
   const columns = [
-    { field: 'id', headerName: 'ID', width: 70 },
+    { field: 'OrderID', headerName: 'ID', width: 70 },
     { field: 'CustomerName', headerName: 'Customer', width: 130 },
     { field: 'OrderDate', headerName: 'Order Date', width: 130 },
     { field: 'ReceiveDate', headerName: 'Receive Date', width: 130 },
     { field: 'CustomerPhone', headerName: 'Phone', width: 130 },
     { field: 'Address', headerName: 'Address', width: 200 },
     { field: 'TotalPrice', headerName: 'Total Price', width: 130 },
-    
+
     {
       field: 'OrderStatus',
       headerName: 'Status',
@@ -58,7 +63,10 @@ export const Order = () => {
               <Button
                 variant="contained"
                 color="primary"
-                onClick={() => handlePickupOrder(params.id)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handlePickupOrder(params.id);
+                }}
                 style={{ marginRight: '10px' }}
               >
                 Pickup
@@ -66,7 +74,10 @@ export const Order = () => {
               <Button
                 variant="contained"
                 color="secondary"
-                onClick={() => handleCancelOrder(params.id)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleCancelOrder(params.id);
+                }}
               >
                 Cancel
               </Button>
@@ -77,7 +88,10 @@ export const Order = () => {
               <Button
                 variant="contained"
                 color="primary"
-                onClick={() => handleDoneOrder(params.id)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDoneOrder(params.id);
+                }}
                 style={{ marginRight: '10px' }}
               >
                 Done
@@ -85,7 +99,10 @@ export const Order = () => {
               <Button
                 variant="contained"
                 color="secondary"
-                onClick={() => handleCancelOrder(params.id)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleCancelOrder(params.id);
+                }}
               >
                 Cancel
               </Button>
@@ -113,8 +130,6 @@ export const Order = () => {
     }
   ];
 
-  const [searchDate, setSearchDate] = useState('');
-  const [rows, setRows] = useState([]);
   const { staffAction, setStaffAction } = useContext(StaffActionContext);
 
   const handlePickupOrder = async (id) => {
@@ -198,6 +213,16 @@ export const Order = () => {
     setSearchDate(event.target.value);
   };
 
+  const handleRowClick = (params) => {
+    setSelectedOrderId(params.row.OrderID);
+    setModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
+    setSelectedOrderId(null);
+  };
+
   const filteredRows = rows.filter((row) => {
     return row.OrderDate.includes(searchDate);
   });
@@ -222,7 +247,9 @@ export const Order = () => {
         }}
         pageSizeOptions={[5, 10]}
         checkboxSelection
+        onRowClick={handleRowClick}
       />
+      <DeliStaffDetailModal open={modalOpen} handleClose={handleCloseModal} orderId={selectedOrderId} />
     </div>
   );
 };
