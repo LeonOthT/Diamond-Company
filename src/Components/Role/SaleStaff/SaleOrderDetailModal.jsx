@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import Box from '@mui/material/Box';
-import { DataGrid } from '@mui/x-data-grid';
-import { Modal, Typography } from '@mui/material';
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
+import Box from "@mui/material/Box";
+import { DataGrid } from "@mui/x-data-grid";
+import { Modal, Typography } from "@mui/material";
+import axios from "axios";
 
 const SaleOrderDetailModal = ({ open, handleClose, orderId }) => {
   const [order, setOrder] = useState(null);
@@ -19,12 +19,14 @@ const SaleOrderDetailModal = ({ open, handleClose, orderId }) => {
     try {
       setLoading(true);
       setError(null);
-      const response = await axios.get(`http://localhost:7292/api/Order/GetOrderInfo?id=${orderId}`);
-      console.log('Order data:', response.data); // Debug: Print API response
+      const response = await axios.get(
+        `https://localhost:7292/api/Order/GetOrderInfo?id=${orderId}`
+      );
+      console.log("Order data:", response.data); // Debug: Print API response
       setOrder(response.data);
     } catch (err) {
       setError(err.message);
-      console.error('Error fetching order details:', err); // Debug: Print error
+      console.error("Error fetching order details:", err); // Debug: Print error
     } finally {
       setLoading(false);
     }
@@ -60,13 +62,13 @@ const SaleOrderDetailModal = ({ open, handleClose, orderId }) => {
               Address: {order.Address}
             </Typography>
             <Typography variant="subtitle1">
-              Discount Rate: {order.DiscountRate*100}%
+              Discount Rate: {order.DiscountRate * 100}%
             </Typography>
             <Typography variant="subtitle1">
               Final Price: {order.FinalPrice}$
-            <Typography variant="subtitle1">
-              Deposits: {order.Deposits}$
-            </Typography>
+              <Typography variant="subtitle1">
+                Deposits: {order.Deposits}$
+              </Typography>
             </Typography>
             <Typography variant="subtitle1">
               Shipping Date: {order.ShippingDate}
@@ -74,23 +76,38 @@ const SaleOrderDetailModal = ({ open, handleClose, orderId }) => {
             <Typography variant="subtitle1">
               Receive Date: {order.ReceiveDate}
             </Typography>
-            <div style={{ height: 500, width: '100%', marginTop: '16px' }}>
+            <div style={{ height: 500, width: "100%", marginTop: "16px" }}>
               <DataGrid
-                rows={order.products.map((product, index) => ({ ...product, id: index }))}
+                rows={order.products.map((product, index) => ({
+                  ...product,
+                  id: index,
+                }))}
                 columns={[
                   {
-                    field: 'Image',
-                    headerName: 'Image',
+                    field: "Image",
+                    headerName: "Image",
                     width: 150,
                     renderCell: (params) => (
-                      <img src={params.value} alt="Product" style={{ width: '100%', height: 'auto' }} />
+                      <img
+                        src={params.value}
+                        alt="Product"
+                        style={{ width: "100%", height: "auto" }}
+                      />
                     ),
                   },
-                  { field: 'ProductName', headerName: 'Product Name', width: 196 },
-                  { field: 'Material', headerName: 'Material', width: 196 },
-                  { field: 'CustomizedSize', headerName: 'Customized Size', width: 196 },
-                  { field: 'Quantity', headerName: 'Quantity', width: 196 },
-                  { field: 'Price', headerName: 'Price', width: 196 },
+                  {
+                    field: "ProductName",
+                    headerName: "Product Name",
+                    width: 196,
+                  },
+                  { field: "Material", headerName: "Material", width: 196 },
+                  {
+                    field: "CustomizedSize",
+                    headerName: "Customized Size",
+                    width: 196,
+                  },
+                  { field: "Quantity", headerName: "Quantity", width: 196 },
+                  { field: "Price", headerName: "Price", width: 196 },
                 ]}
                 pageSize={5}
                 rowHeight={130}
@@ -109,13 +126,13 @@ const SaleOrderDetailModal = ({ open, handleClose, orderId }) => {
 };
 
 const modalStyle = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
   width: 1200,
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
+  bgcolor: "background.paper",
+  border: "2px solid #000",
   boxShadow: 24,
   p: 4,
 };

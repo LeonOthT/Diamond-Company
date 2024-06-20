@@ -1,20 +1,21 @@
-import React, { useState, useContext, useEffect } from 'react';
-import Box from '@mui/material/Box';
-import { DataGrid } from '@mui/x-data-grid';
-import { TextField, Button } from '@mui/material';
-import { StaffActionContext } from '../SaleStaff/StaffActionProvider';
-import axios from 'axios';
-import DeliStaffDetailModal from './DeliStaffDetailModal';
+import React, { useState, useContext, useEffect } from "react";
+import Box from "@mui/material/Box";
+import { DataGrid } from "@mui/x-data-grid";
+import { TextField, Button } from "@mui/material";
+import { StaffActionContext } from "../SaleStaff/StaffActionProvider";
+import axios from "axios";
+import DeliStaffDetailModal from "./DeliStaffDetailModal";
 
 export const Order = () => {
-  const { confirmedOrders, setConfirmedOrders } = useContext(StaffActionContext);
+  const { confirmedOrders, setConfirmedOrders } =
+    useContext(StaffActionContext);
   const [rows, setRows] = useState([]);
-  const [searchDate, setSearchDate] = useState('');
+  const [searchDate, setSearchDate] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState(null);
 
   useEffect(() => {
-    const storedConfirmedOrders = localStorage.getItem('confirmedOrders');
+    const storedConfirmedOrders = localStorage.getItem("confirmedOrders");
     if (storedConfirmedOrders) {
       setConfirmedOrders(JSON.parse(storedConfirmedOrders));
     }
@@ -23,11 +24,16 @@ export const Order = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await axios.get('http://localhost:7292/api/Order/GetOrderInforListForShipper');
-        const ordersWithId = response.data.map((order, index) => ({ ...order, id: index + 1 })); // Ensure unique `id`
+        const response = await axios.get(
+          "https://localhost:7292/api/Order/GetOrderInforListForShipper"
+        );
+        const ordersWithId = response.data.map((order, index) => ({
+          ...order,
+          id: index + 1,
+        })); // Ensure unique `id`
         setRows(ordersWithId);
       } catch (error) {
-        console.error('Error fetching orders:', error);
+        console.error("Error fetching orders:", error);
       }
     };
     fetchOrders();
@@ -36,38 +42,36 @@ export const Order = () => {
   const isOrderConfirmed = (orderId) => confirmedOrders.includes(orderId);
 
   const columns = [
-    { field: 'OrderID', headerName: 'ID', width: 70 },
-    { field: 'CustomerName', headerName: 'Customer', width: 130 },
-    { field: 'OrderDate', headerName: 'Order Date', width: 130 },
-    { field: 'ReceiveDate', headerName: 'Receive Date', width: 130 },
-    { field: 'CustomerPhone', headerName: 'Phone', width: 130 },
-    { field: 'Address', headerName: 'Address', width: 200 },
-    { field: 'TotalPrice', headerName: 'Total Price', width: 130 },
+    { field: "OrderID", headerName: "ID", width: 70 },
+    { field: "CustomerName", headerName: "Customer", width: 130 },
+    { field: "OrderDate", headerName: "Order Date", width: 130 },
+    { field: "ReceiveDate", headerName: "Receive Date", width: 130 },
+    { field: "CustomerPhone", headerName: "Phone", width: 130 },
+    { field: "Address", headerName: "Address", width: 200 },
+    { field: "TotalPrice", headerName: "Total Price", width: 130 },
 
     {
-      field: 'OrderStatus',
-      headerName: 'Status',
+      field: "OrderStatus",
+      headerName: "Status",
       width: 160,
-      renderCell: (params) => (
-        <div>{params.value || 'Pending Delivery'}</div>
-      )
+      renderCell: (params) => <div>{params.value || "Pending Delivery"}</div>,
     },
     {
-      field: 'action',
-      headerName: 'Action',
+      field: "action",
+      headerName: "Action",
       width: 200,
       renderCell: (params) => (
         <div>
-          {params.row.OrderStatus === 'Pending Delivery' && (
+          {params.row.OrderStatus === "Pending Delivery" && (
             <>
               <Button
                 variant="contained"
                 color="primary"
                 onClick={(e) => {
                   e.stopPropagation();
-                  handlePickupOrder(params.id);
+                  handlePickupOrder(params.row.OrderID);
                 }}
-                style={{ marginRight: '10px' }}
+                style={{ marginRight: "10px" }}
               >
                 Pickup
               </Button>
@@ -76,23 +80,23 @@ export const Order = () => {
                 color="secondary"
                 onClick={(e) => {
                   e.stopPropagation();
-                  handleCancelOrder(params.id);
+                  handleCancelOrder(params.row.OrderID);
                 }}
               >
                 Cancel
               </Button>
             </>
           )}
-          {params.row.OrderStatus === 'Delivering' && (
+          {params.row.OrderStatus === "Delivering" && (
             <>
               <Button
                 variant="contained"
                 color="primary"
                 onClick={(e) => {
                   e.stopPropagation();
-                  handleDoneOrder(params.id);
+                  handleDoneOrder(params.row.OrderID);
                 }}
-                style={{ marginRight: '10px' }}
+                style={{ marginRight: "10px" }}
               >
                 Done
               </Button>
@@ -101,111 +105,121 @@ export const Order = () => {
                 color="secondary"
                 onClick={(e) => {
                   e.stopPropagation();
-                  handleCancelOrder(params.id);
+                  handleCancelOrder(params.row.OrderID);
                 }}
               >
                 Cancel
               </Button>
             </>
           )}
-          {['Delivered', 'Canceled'].includes(params.row.OrderStatus) && (
+          {["Delivered", "Canceled"].includes(params.row.OrderStatus) && (
             <>
               <Button
                 variant="contained"
                 disabled
-                style={{ marginRight: '10px' }}
+                style={{ marginRight: "10px" }}
               >
                 Done
               </Button>
-              <Button
-                variant="contained"
-                disabled
-              >
+              <Button variant="contained" disabled>
                 Cancel
               </Button>
             </>
           )}
         </div>
-      )
-    }
+      ),
+    },
   ];
 
   const { staffAction, setStaffAction } = useContext(StaffActionContext);
 
-  const handlePickupOrder = async (id) => {
-    const username = localStorage.getItem('username');
-    const role = localStorage.getItem('role');
+  const handlePickupOrder = async (orderId) => {
+    const username = localStorage.getItem("username");
+    const role = localStorage.getItem("role");
 
     try {
-      const response = await axios.post('http://localhost:7292/api/Order/UpdateOrderStatus', {
-        orderID: id,
-        buttonValue: 'PICKUP',
-        username,
-        role
-      });
+      const response = await axios.post(
+        "https://localhost:7292/api/Order/UpdateOrderStatus",
+        {
+          OrderID: orderId,
+          ButtonValue: "PICKUP",
+          Username: username,
+          Role: role,
+          ShippingDate: new Date().toISOString(),
+        }
+      );
 
       if (response.status === 200) {
         setRows((prevRows) =>
           prevRows.map((row) =>
-            row.id === id ? { ...row, OrderStatus: 'Delivering' } : row
+            row.OrderID === orderId
+              ? { ...row, OrderStatus: "Delivering" }
+              : row
           )
         );
-        setConfirmedOrders((prev) => [...prev, id]);
-        setStaffAction('pickup');
+        setConfirmedOrders((prev) => [...prev, orderId]);
+        setStaffAction("pickup");
       }
     } catch (error) {
-      console.error('Error updating order status:', error);
+      console.error("Error updating order status:", error);
     }
   };
 
-  const handleCancelOrder = async (id) => {
-    const username = localStorage.getItem('username');
-    const role = localStorage.getItem('role');
+  const handleCancelOrder = async (orderId) => {
+    const username = localStorage.getItem("username");
+    const role = localStorage.getItem("role");
 
     try {
-      const response = await axios.post('http://localhost:7292/api/Order/UpdateOrderStatus', {
-        orderID: id,
-        buttonValue: 'CANCEL',
-        username,
-        role
-      });
+      const response = await axios.post(
+        "https://localhost:7292/api/Order/UpdateOrderStatus",
+        {
+          OrderID: orderId,
+          ButtonValue: "CANCEL",
+          Username: username,
+          Role: role,
+        }
+      );
 
       if (response.status === 200) {
         setRows((prevRows) =>
           prevRows.map((row) =>
-            row.id === id ? { ...row, OrderStatus: 'Canceled' } : row
+            row.OrderID === orderId ? { ...row, OrderStatus: "Canceled" } : row
           )
         );
-        setConfirmedOrders((prev) => prev.filter(orderId => orderId !== id));
-        setStaffAction('cancel');
+        setConfirmedOrders((prev) => prev.filter((id) => id !== orderId));
+        setStaffAction("cancel");
       }
     } catch (error) {
-      console.error('Error updating order status:', error);
+      console.error("Error updating order status:", error);
     }
   };
 
-  const handleDoneOrder = async (id) => {
-    const username = localStorage.getItem('username');
-    const role = localStorage.getItem('role');
+  const handleDoneOrder = async (orderId) => {
+    const username = localStorage.getItem("username");
+    const role = localStorage.getItem("role");
 
     try {
-      const response = await axios.post('http://localhost:7292/api/Order/UpdateOrderStatus', {
-        orderID: id,
-        buttonValue: 'DONE',
-        username,
-        role
-      });
+      const response = await axios.post(
+        "https://localhost:7292/api/Order/UpdateOrderStatus",
+        {
+          OrderID: orderId,
+          ButtonValue: "DONE",
+          Username: username,
+          Role: role,
+          ReceivedDate: new Date().toISOString(),
+        }
+      );
 
       if (response.status === 200) {
         setRows((prevRows) =>
           prevRows.map((row) =>
-            row.id === id ? { ...row, OrderStatus: 'Delivered' } : row
+            row.OrderID === orderId ? { ...row, OrderStatus: "Delivered" } : row
           )
         );
-        setStaffAction('done');
+        setStaffAction("done");
       }
     } catch (error) {
-      console.error('Error updating order status:', error);
+      console.error("Error updating order status:", error);
     }
   };
 
@@ -228,7 +242,7 @@ export const Order = () => {
   });
 
   return (
-    <div style={{ height: 500, width: '100%' }}>
+    <div style={{ height: 500, width: "100%" }}>
       <Box sx={{ mb: 2 }}>
         <TextField
           label="Search by Order Date"
@@ -249,7 +263,11 @@ export const Order = () => {
         checkboxSelection
         onRowClick={handleRowClick}
       />
-      <DeliStaffDetailModal open={modalOpen} handleClose={handleCloseModal} orderId={selectedOrderId} />
+      <DeliStaffDetailModal
+        open={modalOpen}
+        handleClose={handleCloseModal}
+        orderId={selectedOrderId}
+      />
     </div>
   );
 };

@@ -1,23 +1,39 @@
-import React, { useState, useEffect } from 'react';
-import { Box, Typography, List, ListItem, ListItemIcon, ListItemText, Avatar, Grid, Paper, Switch, FormControl, InputLabel, Select, MenuItem, Slider } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
-import ReceiptIcon from '@mui/icons-material/Receipt';
-import PersonIcon from '@mui/icons-material/Person';
-import GroupIcon from '@mui/icons-material/Group';
-import Chart from 'react-apexcharts';
-import { styled } from '@mui/system';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import {
+  Box,
+  Typography,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Avatar,
+  Grid,
+  Paper,
+  Switch,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Slider,
+} from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
+import ReceiptIcon from "@mui/icons-material/Receipt";
+import PersonIcon from "@mui/icons-material/Person";
+import GroupIcon from "@mui/icons-material/Group";
+import Chart from "react-apexcharts";
+import { styled } from "@mui/system";
+import axios from "axios";
 
 const Sidebar = styled(Box)(({ theme }) => ({
   width: 250,
-  height: '100vh',
-  backgroundColor: '#3f51b5',
-  color: '#fff',
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'space-between',
-  padding: '20px 10px',
-  position: 'fixed',
+  height: "100vh",
+  backgroundColor: "#3f51b5",
+  color: "#fff",
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "space-between",
+  padding: "20px 10px",
+  position: "fixed",
   left: 0,
   top: 0,
   bottom: 0,
@@ -25,56 +41,67 @@ const Sidebar = styled(Box)(({ theme }) => ({
 
 const Content = styled(Box)(({ theme }) => ({
   flexGrow: 1,
-  padding: '20px',
-  backgroundColor: '#f4f6f8',
+  padding: "20px",
+  backgroundColor: "#f4f6f8",
   marginLeft: 250, // To offset the fixed sidebar width
-  overflowY: 'auto',
-  height: '100vh',
+  overflowY: "auto",
+  height: "100vh",
 }));
 
 const SearchBar = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  marginBottom: '20px',
+  display: "flex",
+  alignItems: "center",
+  marginBottom: "20px",
 }));
 
 const Card = styled(Paper)(({ theme }) => ({
-  padding: '20px',
-  textAlign: 'center',
-  marginBottom: '20px',
+  padding: "20px",
+  textAlign: "center",
+  marginBottom: "20px",
 }));
 
 const data = {
   series: [
     {
-      name: 'Employees Info',
+      name: "Employees Info",
       data: [10, 15, 9, 20, 25, 20, 30],
     },
   ],
   options: {
     chart: {
-      type: 'line',
+      type: "line",
     },
     xaxis: {
-      categories: ['0 Jan', '31 Jan', '22 Feb', '15 Mar', '05 Apr', '26 Apr', '17 May'],
+      categories: [
+        "0 Jan",
+        "31 Jan",
+        "22 Feb",
+        "15 Mar",
+        "05 Apr",
+        "26 Apr",
+        "17 May",
+      ],
     },
   },
 };
 
 const ManagerPage = () => {
-  const [selectedMenu, setSelectedMenu] = useState('Dashboard');
-  const [cut, setCut] = useState('');
-  const [clarity, setClarity] = useState('');
-  const [color, setColor] = useState('');
-  const [origin, setOrigin] = useState('');
+  const [selectedMenu, setSelectedMenu] = useState("Dashboard");
+  const [cut, setCut] = useState("");
+  const [clarity, setClarity] = useState("");
+  const [color, setColor] = useState("");
+  const [origin, setOrigin] = useState("");
   const [caratWeightRange, setCaratWeightRange] = useState([0.55, 1.75]);
   const [gemPriceList, setGemPriceList] = useState([]);
 
   const fetchGemPriceList = async (filters) => {
     try {
-      const response = await axios.get('http://localhost:7292/api/GemPriceList/FilterGemPriceList', {
-        params: filters,
-      });
+      const response = await axios.get(
+        "https://localhost:7292/api/GemPriceList/FilterGemPriceList",
+        {
+          params: filters,
+        }
+      );
       setGemPriceList(response.data);
     } catch (error) {
       console.error("There was an error fetching the gem price list!", error);
@@ -82,8 +109,15 @@ const ManagerPage = () => {
   };
 
   useEffect(() => {
-    if (selectedMenu === 'Diamond Management') {
-      fetchGemPriceList({ cut, clarity, color, origin, minCaratWeight: caratWeightRange[0], maxCaratWeight: caratWeightRange[1] });
+    if (selectedMenu === "Diamond Management") {
+      fetchGemPriceList({
+        cut,
+        clarity,
+        color,
+        origin,
+        minCaratWeight: caratWeightRange[0],
+        maxCaratWeight: caratWeightRange[1],
+      });
     }
   }, [selectedMenu, cut, clarity, color, origin, caratWeightRange]);
 
@@ -109,13 +143,17 @@ const ManagerPage = () => {
 
   const renderContent = () => {
     switch (selectedMenu) {
-      case 'Dashboard':
+      case "Dashboard":
         return (
           <Grid container spacing={3}>
             <Grid item xs={12} md={6}>
               <Card>
                 <Typography variant="h6">Employees Info</Typography>
-                <Chart options={data.options} series={data.series} type="line" />
+                <Chart
+                  options={data.options}
+                  series={data.series}
+                  type="line"
+                />
               </Card>
             </Grid>
             <Grid item xs={12} md={3}>
@@ -125,9 +163,9 @@ const ManagerPage = () => {
                 <Chart
                   options={{
                     chart: {
-                      type: 'donut',
+                      type: "donut",
                     },
-                    labels: ['Man', 'Women'],
+                    labels: ["Man", "Women"],
                   }}
                   series={[60, 40]}
                   type="donut"
@@ -174,25 +212,34 @@ const ManagerPage = () => {
                 <List>
                   <ListItem>
                     <Avatar src="/broken-image.jpg" />
-                    <ListItemText primary="Natalie Gibson" secondary="1.30 - 1.30 (Ui/UX Designer)" />
+                    <ListItemText
+                      primary="Natalie Gibson"
+                      secondary="1.30 - 1.30 (Ui/UX Designer)"
+                    />
                   </ListItem>
                   <ListItem>
                     <Avatar src="/broken-image.jpg" />
-                    <ListItemText primary="Peter Piperg" secondary="9.00 - 1.30 (Web Design)" />
+                    <ListItemText
+                      primary="Peter Piperg"
+                      secondary="9.00 - 1.30 (Web Design)"
+                    />
                   </ListItem>
                   <ListItem>
                     <Avatar src="/broken-image.jpg" />
-                    <ListItemText primary="Robert Young" secondary="1.30 - 2.30" />
+                    <ListItemText
+                      primary="Robert Young"
+                      secondary="1.30 - 2.30"
+                    />
                   </ListItem>
                 </List>
               </Card>
             </Grid>
           </Grid>
         );
-      case 'Diamond Management':
+      case "Diamond Management":
         return (
           <div>
-            <h1 style={{color: '#333'}}>Gem Price List</h1>
+            <h1 style={{ color: "#333" }}>Gem Price List</h1>
             <FormControl fullWidth margin="normal">
               <InputLabel>Cut</InputLabel>
               <Select value={cut} onChange={handleCutChange}>
@@ -237,8 +284,8 @@ const ManagerPage = () => {
                 <MenuItem value="Natural">Natural</MenuItem>
               </Select>
             </FormControl>
-            <Box sx={{ width: '30%', marginTop: '16px' }}>
-              <Typography id="range-slider" gutterBottom sx={{color: '#333'}}>
+            <Box sx={{ width: "30%", marginTop: "16px" }}>
+              <Typography id="range-slider" gutterBottom sx={{ color: "#333" }}>
                 Carat Weight Range
               </Typography>
               <Slider
@@ -261,7 +308,9 @@ const ManagerPage = () => {
                     <Typography variant="body1">{`Cut: ${gem.Cut}`}</Typography>
                     <Typography variant="body1">{`Clarity: ${gem.Clarity}`}</Typography>
                     <Typography variant="body1">{`Price: $${gem.Price}`}</Typography>
-                    <Typography variant="body1">{`Effective Date: ${new Date(gem.EffDate).toLocaleDateString()}`}</Typography>
+                    <Typography variant="body1">{`Effective Date: ${new Date(
+                      gem.EffDate
+                    ).toLocaleDateString()}`}</Typography>
                   </Card>
                 </Grid>
               ))}
@@ -277,50 +326,53 @@ const ManagerPage = () => {
     <Box display="flex">
       <Sidebar>
         <Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+          <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
             <Typography variant="h6" component="div">
               My-Task
             </Typography>
           </Box>
           <List>
-            <ListItem button onClick={() => setSelectedMenu('Dashboard')}>
-              <ListItemIcon sx={{ color: '#fff' }}>
+            <ListItem button onClick={() => setSelectedMenu("Dashboard")}>
+              <ListItemIcon sx={{ color: "#fff" }}>
                 <ReceiptIcon />
               </ListItemIcon>
               <ListItemText primary="Dashboard" />
             </ListItem>
-            <ListItem button onClick={() => setSelectedMenu('Diamond Management')}>
-              <ListItemIcon sx={{ color: '#fff' }}>
+            <ListItem
+              button
+              onClick={() => setSelectedMenu("Diamond Management")}
+            >
+              <ListItemIcon sx={{ color: "#fff" }}>
                 <PersonIcon />
               </ListItemIcon>
               <ListItemText primary="Diamond Management" />
             </ListItem>
             <ListItem button>
-              <ListItemIcon sx={{ color: '#fff' }}>
+              <ListItemIcon sx={{ color: "#fff" }}>
                 <PersonIcon />
               </ListItemIcon>
               <ListItemText primary="Material Management" />
             </ListItem>
             <ListItem button>
-              <ListItemIcon sx={{ color: '#fff' }}>
+              <ListItemIcon sx={{ color: "#fff" }}>
                 <GroupIcon />
               </ListItemIcon>
               <ListItemText primary="Our Clients" />
             </ListItem>
             <ListItem button>
-              <ListItemIcon sx={{ color: '#fff' }}>
+              <ListItemIcon sx={{ color: "#fff" }}>
                 <GroupIcon />
               </ListItemIcon>
               <ListItemText primary="Employees" />
             </ListItem>
             <ListItem button>
-              <ListItemIcon sx={{ color: '#fff' }}>
+              <ListItemIcon sx={{ color: "#fff" }}>
                 <GroupIcon />
               </ListItemIcon>
               <ListItemText primary="Accounts" />
             </ListItem>
             <ListItem button>
-              <ListItemIcon sx={{ color: '#fff' }}>
+              <ListItemIcon sx={{ color: "#fff" }}>
                 <GroupIcon />
               </ListItemIcon>
               <ListItemText primary="Payroll" />
@@ -339,8 +391,7 @@ const ManagerPage = () => {
         </Box>
       </Sidebar>
       <Content>
-        <SearchBar>
-        </SearchBar>
+        <SearchBar></SearchBar>
         {renderContent()}
       </Content>
     </Box>
