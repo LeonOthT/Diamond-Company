@@ -157,7 +157,7 @@ const ManagerPage = () => {
 
   const fetchGemPriceList = async (filters) => {
     try {
-      const response = await axios.get('https://localhost:7292/api/GemPriceList/FilterGemPriceList', {
+      const response = await axios.get('http://localhost:7292/api/GemPriceList/FilterGemPriceList', {
         params: filters,
       });
       setGemPriceList(response.data);
@@ -168,7 +168,7 @@ const ManagerPage = () => {
 
   const fetchMaterialList = async () => {
     try {
-      const response = await axios.get('https://localhost:7292/api/MaterialPriceLists');
+      const response = await axios.get('http://localhost:7292/api/MaterialPriceLists');
       setMaterialList(response.data);
     } catch (error) {
       console.error("There was an error fetching the material list!", error);
@@ -183,7 +183,7 @@ const ManagerPage = () => {
   };
 
   const handleDeleteClick = async (productId) => {
-    const url = `https://localhost:7292/api/Products/DeleteProduct/${productId}`;
+    const url = `http://localhost:7292/api/Products/DeleteProduct/${productId}`;
     try {
       await axios.delete(url);
       fetchData();
@@ -241,12 +241,6 @@ const ManagerPage = () => {
       const formattedData = data
         .map((item) => ({
           id: item.ProductId,
-          PriceRate: item.Pricerate,
-          GemId: item.GemId,
-          Weight: item.Weight,
-          CategoryID: item.CategoryID,
-          GemCost: item.GemCost,
-          ProductionCost: item.ProductionCost,
           MaterialId: item.MaterialId,
           ProductId: item.ProductId,
           ProductName: item.ProductName,
