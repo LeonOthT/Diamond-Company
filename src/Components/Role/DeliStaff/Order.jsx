@@ -144,7 +144,7 @@ export const Order = () => {
         username,
         role,
         shippingdate: new Date(),
-        receieveddate: new Date()
+        receiveddate: new Date()
       });
 
       if (response.status === 200) {
@@ -172,7 +172,7 @@ export const Order = () => {
         username,
         role,
         shippingdate: new Date(),
-        receieveddate: new Date()
+        receiveddate: new Date()
       });
 
       if (response.status === 200) {
@@ -200,7 +200,7 @@ export const Order = () => {
         username,
         role,
         shippingdate: new Date(),
-        receieveddate: new Date()
+        receiveddate: new Date()
       });
 
       if (response.status === 200) {
