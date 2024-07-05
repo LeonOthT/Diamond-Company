@@ -9,22 +9,32 @@ export default function LoginPage() {
 
   const handleLogin = async (username, password) => {
     try {
-      const response = await axios.post("http://localhost:7292/api/Accounts/login", { username, password });
-      console.log("Response data:", response.data); // Added for debugging
-
-      localStorage.setItem("username", response.data.Username);
-      localStorage.setItem("role", response.data.Role);
-
-      const token = response.data.token;
+      const response = await axios.post("https://localhost:7292/api/Accounts/login", { username, password });
+      console.log("Full Response data:", response); // Log toàn bộ phản hồi để debug
+  
+      // Kiểm tra xem phản hồi có chứa dữ liệu và trường Role hay không
+      if (!response.data || !response.data.CustomerInfo.Role) {
+        console.error("Role is not defined in the response");
+        console.error("Response data:", response.data); // Log dữ liệu phản hồi để debug
+        return;
+      }
+  
+      localStorage.setItem("username", response.data.CustomerInfo.UserName);
+      localStorage.setItem("role", response.data.CustomerInfo.Role);
+      console.log("Stored role:", localStorage.getItem("role")); // Thêm để debug
+  
+      const token = response.data.Token;
       localStorage.setItem("authToken", token);
-
+  
       console.log("Login successful!");
-
-      if (response.data.Role === "Admin") {
+      console.log("User role:", response.data.CustomerInfo.Role); // Thêm để debug
+  
+      if (response.data.CustomerInfo.Role === "Manager") {
         navigate("/AdminPage");
-      } else if (response.data.Role === "SaleStaff") {
+      } else if (response.data.CustomerInfo.Role === "SaleStaff") {
+        console.log("Navigating to SaleStaffPage"); // Thêm để debug
         navigate("/SaleStaffPage");
-      } else if (response.data.Role === "Shipper") {
+      } else if (response.data.CustomerInfo.Role === "Shipper") {
         navigate("/DeliStaffPage");
       } else {
         navigate("/");
@@ -32,10 +42,11 @@ export default function LoginPage() {
     } catch (error) {
       console.error("Login failed:", error);
       if (error.response) {
-        console.error("Error response data:", error.response.data); // Added for debugging
+        console.error("Error response data:", error.response.data); // Thêm để debug
       }
     }
   };
+  
 
   const handleSubmit = (e) => {
     e.preventDefault();

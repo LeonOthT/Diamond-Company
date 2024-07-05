@@ -157,7 +157,7 @@ const ManagerPage = () => {
 
   const fetchGemPriceList = async (filters) => {
     try {
-      const response = await axios.get('http://localhost:7292/api/GemPriceList/FilterGemPriceList', {
+      const response = await axios.get('https://localhost:7292/api/GemPriceList/FilterGemPriceList', {
         params: filters,
       });
       setGemPriceList(response.data);
@@ -168,7 +168,7 @@ const ManagerPage = () => {
 
   const fetchMaterialList = async () => {
     try {
-      const response = await axios.get('http://localhost:7292/api/MaterialPriceLists');
+      const response = await axios.get('https://localhost:7292/api/MaterialPriceLists');
       setMaterialList(response.data);
     } catch (error) {
       console.error("There was an error fetching the material list!", error);
@@ -183,7 +183,7 @@ const ManagerPage = () => {
   };
 
   const handleDeleteClick = async (productId) => {
-    const url = `http://localhost:7292/api/Products/DeleteProduct/${productId}`;
+    const url = `https://localhost:7292/api/Products/DeleteProduct/${productId}`;
     try {
       await axios.delete(url);
       fetchData();
@@ -241,6 +241,12 @@ const ManagerPage = () => {
       const formattedData = data
         .map((item) => ({
           id: item.ProductId,
+          CategoryID: item.CategoryID,
+          GemCost: item.GemCost,
+          ProductionCost: item.ProductionCost,
+          GemId: item.GemId,
+          Weight: item.Weight,
+          PriceRate: item.PriceRate,
           MaterialId: item.MaterialId,
           ProductId: item.ProductId,
           ProductName: item.ProductName,
@@ -274,19 +280,26 @@ const ManagerPage = () => {
 
   const handleSaveClickProduct = async () => {
     const updatedValues = {};
-
+  
     for (const key in formValues) {
       if (formValues[key] !== originalValues[key]) {
         updatedValues[key] = formValues[key];
       }
     }
-    console.log(formValues)
-
+  
+    // Log form values and updated values for debugging
+    console.log("Form Values:", formValues);
+    console.log("Original Values:", originalValues);
+    console.log("Updated Values:", updatedValues);
+  
+    
+  
+    let url;
     try {
-      const url = isEdit
+      url = isEdit
         ? `https://localhost:7292/api/Products/UpdateProduct/${formValues.ProductId}`
         : 'https://localhost:7292/api/Products/CreateProduct';
-
+  
       const response = await axios({
         method: isEdit ? 'put' : 'post',
         url: url,
@@ -295,17 +308,23 @@ const ManagerPage = () => {
           'Content-Type': 'application/json',
         },
       });
-
+  
       setOpen(false);
       fetchData();
     } catch (error) {
+      console.log('Response:', error.response);
+  
       if (error.response) {
-        console.error('Error response from server:', error.response.data);  // In ra chi tiết lỗi từ phản hồi của máy chủ
+        console.error('Error response from server:', error.response.data); // Log detailed server error
+        alert(`Error: ${JSON.stringify(error.response.data.errors, null, 2)}`); // Display error details
       } else {
-        console.error('Error saving product:', error.message);  // In ra thông báo lỗi chung
+        console.error('Error saving product:', error.message); // Log general error
+        alert('Error saving product: ' + error.message); // Display general error message
       }
     }
   };
+  
+  
 
   const handleClose = () => {
     setOpen(false);

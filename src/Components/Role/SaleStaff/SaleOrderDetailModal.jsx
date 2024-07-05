@@ -19,7 +19,7 @@ const SaleOrderDetailModal = ({ open, handleClose, orderId }) => {
     try {
       setLoading(true);
       setError(null);
-      const response = await axios.get(`http://localhost:7292/api/Order/GetOrderInfo?id=${orderId}`);
+      const response = await axios.get(`https://localhost:7292/api/Order/GetOrderInfo?id=${orderId}`);
       console.log('Order data:', response.data); // Debug: Print API response
       setOrder(response.data);
     } catch (err) {

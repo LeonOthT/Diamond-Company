@@ -92,7 +92,7 @@ export const SaleOrder = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await axios.get('http://localhost:7292/api/Order/GetOrderInfoListForSaleStaff');
+        const response = await axios.get('https://localhost:7292/api/Order/GetOrderInfoListForSaleStaff');
         const ordersWithId = response.data.map(order => ({ ...order, id: order.OrderID }));
         setRows(ordersWithId);
       } catch (error) {
@@ -123,13 +123,16 @@ export const SaleOrder = () => {
   const handleConfirmOrder = async (id) => {
     const username = localStorage.getItem('username');
     const role = localStorage.getItem('role');
+    
 
     try {
-      const response = await axios.post('http://localhost:7292/api/Order/UpdateOrderStatus', {
+      const response = await axios.put('https://localhost:7292/api/Order/UpdateOrderStatus', {
         orderID: id,
         buttonValue: 'CONFIRM',
         username,
-        role
+        role,
+        shippingdate: new Date(),
+        receievedate: new Date()
       });
 
       if (response.status === 200) {
@@ -151,11 +154,13 @@ export const SaleOrder = () => {
     const role = localStorage.getItem('role');
 
     try {
-      const response = await axios.post('http://localhost:7292/api/Order/UpdateOrderStatus', {
+      const response = await axios.put('https://localhost:7292/api/Order/UpdateOrderStatus', {
         orderID: id,
         buttonValue: 'READY',
         username,
-        role
+        role,
+        shippingdate: new Date(),
+        receievedate: new Date()
       });
 
       if (response.status === 200) {
@@ -177,7 +182,7 @@ export const SaleOrder = () => {
     const role = localStorage.getItem('role');
 
     try {
-      const response = await axios.post('http://localhost:7292/api/Order/UpdateOrderStatus', {
+      const response = await axios.put('https://localhost:7292/api/Order/UpdateOrderStatus', {
         orderID: id,
         buttonValue: 'CANCEL',
         username,

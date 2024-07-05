@@ -19,7 +19,7 @@ const DeliStaffDetailModal = ({ open, handleClose, orderId }) => {
     try {
       setLoading(true);
       setError(null);
-      const response = await axios.get(`http://localhost:7292/api/Order/GetOrderInfo?id=${orderId}`);
+      const response = await axios.get(`https://localhost:7292/api/Order/GetOrderInfo?id=${orderId}`);
       setOrder(response.data);
     } catch (err) {
       setError(err.message);
