@@ -30,7 +30,7 @@ export default function LoginPage() {
       console.log("User role:", response.data.CustomerInfo.Role); // Thêm để debug
   
       if (response.data.CustomerInfo.Role === "Manager") {
-        navigate("/AdminPage");
+        navigate("/ManagerPage");
       } else if (response.data.CustomerInfo.Role === "SaleStaff") {
         console.log("Navigating to SaleStaffPage"); // Thêm để debug
         navigate("/SaleStaffPage");
