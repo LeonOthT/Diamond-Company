@@ -44,7 +44,6 @@ export const Order = () => {
     { field: 'CustomerPhone', headerName: 'Phone', width: 130 },
     { field: 'Address', headerName: 'Address', width: 200 },
     { field: 'TotalPrice', headerName: 'Total Price', width: 130 },
-   
     {
       field: 'OrderStatus',
       headerName: 'Status',
@@ -66,7 +65,7 @@ export const Order = () => {
                 color="primary"
                 onClick={(e) => {
                   e.stopPropagation();
-                  handlePickupOrder(params.id);
+                  handlePickupOrder(params.row.OrderID);
                 }}
                 style={{ marginRight: '10px' }}
               >
@@ -77,7 +76,7 @@ export const Order = () => {
                 color="secondary"
                 onClick={(e) => {
                   e.stopPropagation();
-                  handleCancelOrder(params.id);
+                  handleCancelOrder(params.row.OrderID);
                 }}
               >
                 Cancel
@@ -91,7 +90,7 @@ export const Order = () => {
                 color="primary"
                 onClick={(e) => {
                   e.stopPropagation();
-                  handleDoneOrder(params.id);
+                  handleDoneOrder(params.row.OrderID);
                 }}
                 style={{ marginRight: '10px' }}
               >
@@ -102,7 +101,7 @@ export const Order = () => {
                 color="secondary"
                 onClick={(e) => {
                   e.stopPropagation();
-                  handleCancelOrder(params.id);
+                  handleCancelOrder(params.row.OrderID);
                 }}
               >
                 Cancel
@@ -133,27 +132,27 @@ export const Order = () => {
 
   const { staffAction, setStaffAction } = useContext(StaffActionContext);
 
-  const handlePickupOrder = async (id) => {
+  const handlePickupOrder = async (orderID) => {
     const username = localStorage.getItem('username');
     const role = localStorage.getItem('role');
 
     try {
       const response = await axios.put('https://localhost:7292/api/Order/UpdateOrderStatus', {
-        orderID: id,
+        orderID: orderID,
         buttonValue: 'PICKUP',
         username,
         role,
-        shippingdate: new Date(),
-        receieveddate: new Date()
+        shippingdate: new Date().toISOString(),
+        receiveddate: new Date().toISOString()
       });
 
       if (response.status === 200) {
         setRows((prevRows) =>
           prevRows.map((row) =>
-            row.id === id ? { ...row, OrderStatus: 'Delivering' } : row
+            row.OrderID === orderID ? { ...row, OrderStatus: 'Delivering' } : row
           )
         );
-        setConfirmedOrders((prev) => [...prev, id]);
+        setConfirmedOrders((prev) => [...prev, orderID]);
         setStaffAction('pickup');
       }
     } catch (error) {
@@ -161,27 +160,27 @@ export const Order = () => {
     }
   };
 
-  const handleCancelOrder = async (id) => {
+  const handleCancelOrder = async (orderID) => {
     const username = localStorage.getItem('username');
     const role = localStorage.getItem('role');
 
     try {
       const response = await axios.put('https://localhost:7292/api/Order/UpdateOrderStatus', {
-        orderID: id,
+        orderID: orderID,
         buttonValue: 'CANCEL',
         username,
         role,
-        shippingdate: new Date(),
-        receieveddate: new Date()
+        shippingdate: new Date().toISOString(),
+        receiveddate: new Date().toISOString()
       });
 
       if (response.status === 200) {
         setRows((prevRows) =>
           prevRows.map((row) =>
-            row.id === id ? { ...row, OrderStatus: 'Canceled' } : row
+            row.OrderID === orderID ? { ...row, OrderStatus: 'Canceled' } : row
           )
         );
-        setConfirmedOrders((prev) => prev.filter(orderId => orderId !== id));
+        setConfirmedOrders((prev) => prev.filter(orderId => orderId !== orderID));
         setStaffAction('cancel');
       }
     } catch (error) {
@@ -189,24 +188,24 @@ export const Order = () => {
     }
   };
 
-  const handleDoneOrder = async (id) => {
+  const handleDoneOrder = async (orderID) => {
     const username = localStorage.getItem('username');
     const role = localStorage.getItem('role');
 
     try {
       const response = await axios.put('https://localhost:7292/api/Order/UpdateOrderStatus', {
-        orderID: id,
+        orderID: orderID,
         buttonValue: 'DONE',
         username,
         role,
-        shippingdate: new Date(),
-        receieveddate: new Date()
+        shippingdate: new Date().toISOString(),
+        receiveddate: new Date().toISOString()
       });
 
       if (response.status === 200) {
         setRows((prevRows) =>
           prevRows.map((row) =>
-            row.id === id ? { ...row, OrderStatus: 'Delivered' } : row
+            row.OrderID === orderID ? { ...row, OrderStatus: 'Delivered' } : row
           )
         );
         setStaffAction('done');
@@ -214,7 +213,6 @@ export const Order = () => {
     } catch (error) {
       console.error('Error updating order status:', error);
     }
-    console.log("Full Response data:", response)
   };
 
   const handleSearchChange = (event) => {
