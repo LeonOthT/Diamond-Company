@@ -13,6 +13,10 @@ import AddIcon from '@mui/icons-material/Add';
 import axios from 'axios';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import './style.css';
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+import BuildIcon from '@mui/icons-material/Build';
+import DiamondIcon from '@mui/icons-material/Diamond';
+import AccountManagement from './AccountManagement';
 
 const Sidebar = styled(Box)(({ theme }) => ({
   height: '100vh',
@@ -404,7 +408,7 @@ const ManagerPage = () => {
                     },
                     labels: ['Man', 'Women'],
                   }}
-                  series={[60, 40]}
+                  series={[60, 40]} 
                   type="donut"
                 />
               </Card>
@@ -619,6 +623,9 @@ const ManagerPage = () => {
           </Grid>
         );
       case 'Product Management':
+
+
+
         return (
           <Box sx={{ height: '100vh', width: '100%' }}>
             <Button variant="contained" startIcon={<AddIcon />} onClick={() => setOpen(true)} sx={{ marginBottom: "10px" }}>
@@ -795,7 +802,14 @@ const ManagerPage = () => {
 
           </Box >
         );
-      default:
+      
+      case 'Account Management':
+        return <AccountManagement />;
+
+
+
+      
+        default:
         return null;
     }
   };
@@ -826,13 +840,13 @@ const ManagerPage = () => {
           </ListItem>
           <ListItem button onClick={() => setSelectedMenu('Diamond Management')}>
             <ListItemIcon>
-              <PersonIcon />
+              <DiamondIcon />
             </ListItemIcon>
             {sidebarOpen && <ListItemText primary="Diamond Management" />}
           </ListItem>
           <ListItem button onClick={() => setSelectedMenu('Material Management')}>
             <ListItemIcon>
-              <PersonIcon />
+              <BuildIcon />
             </ListItemIcon>
             {sidebarOpen && <ListItemText primary="Material Management" />}
           </ListItem>
@@ -842,11 +856,11 @@ const ManagerPage = () => {
             </ListItemIcon>
             {sidebarOpen && <ListItemText primary="Product Management" />}
           </ListItem>
-          <ListItem button>
+          <ListItem button onClick={() => setSelectedMenu('Account Management')}>
             <ListItemIcon>
-              <GroupIcon />
+              < ManageAccountsIcon />
             </ListItemIcon>
-            {sidebarOpen && <ListItemText primary="Employees" />}
+            {sidebarOpen && <ListItemText primary="Account Management" />}
           </ListItem>
           <ListItem button>
             <ListItemIcon>
