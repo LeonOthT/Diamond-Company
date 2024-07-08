@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Button, TextField, Dialog, DialogActions, DialogContent, DialogTitle, MenuItem, Select, InputLabel, FormControl } from '@mui/material';
+import { Box, Button, TextField, Dialog, DialogActions, DialogContent, DialogTitle, MenuItem, Select, InputLabel, FormControl, Tabs, Tab, Switch } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import AddIcon from '@mui/icons-material/Add';
 import axios from 'axios';
+import dayjs from 'dayjs';
 
 const AccountManagement = () => {
   const [open, setOpen] = useState(false);
@@ -24,22 +25,27 @@ const AccountManagement = () => {
   });
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [currentTab, setCurrentTab] = useState(0);
 
   useEffect(() => {
-    const fetchAccounts = async () => {
-      setLoading(true);
-      try {
-        const response = await axios.get('https://localhost:7292/api/Accounts/GetAccountList');
-        setRows(response.data);
-      } catch (error) {
-        console.error('Error fetching account list:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchAccounts();
+    fetchAccounts('https://localhost:7292/api/Accounts/GetAccountList');
   }, []);
+
+  const fetchAccounts = async (url) => {
+    setLoading(true);
+    try {
+      const response = await axios.get(url);
+      const formattedData = response.data.map((account) => ({
+        ...account,
+        Birthday: dayjs(account.Birthday).format('YYYY-MM-DD')
+      }));
+      setRows(formattedData);
+    } catch (error) {
+      console.error('Error fetching account list:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -48,10 +54,8 @@ const AccountManagement = () => {
 
   const handleSaveClickAccount = () => {
     if (isEdit) {
-      // Edit account logic here
       setRows(rows.map(row => row.AccountId === formValues.AccountId ? formValues : row));
     } else {
-      // Add account logic here
       setRows([...rows, { ...formValues, AccountId: Date.now().toString() }]);
     }
     setOpen(false);
@@ -77,8 +81,41 @@ const AccountManagement = () => {
     });
   };
 
+  const handleTabChange = (event, newValue) => {
+    setCurrentTab(newValue);
+    switch (newValue) {
+      case 0:
+        fetchAccounts('https://localhost:7292/api/Accounts/GetAccountList');
+        break;
+      case 1:
+        fetchAccounts('https://localhost:7292/api/Accounts/GetCustomerList');
+        break;
+      case 2:
+        fetchAccounts('https://localhost:7292/api/Accounts/GetSaleStaffList');
+        break;
+      case 3:
+        fetchAccounts('https://localhost:7292/api/Accounts/GetShipperList');
+        break;
+      default:
+        break;
+    }
+  };
+
+  const handleStatusToggle = async (username, currentStatus) => {
+    try {
+      const response = await axios.put('https://localhost:7292/api/Accounts/UpdateAccountStatus', {
+        Username: username,
+        Status: !currentStatus,
+      });
+      if (response.status === 200) {
+        fetchAccounts('https://localhost:7292/api/Accounts/GetAccountList');
+      }
+    } catch (error) {
+      console.error('Error updating account status:', error);
+    }
+  };
+  
   const columns = [
-    { field: 'AccountId', headerName: 'ID', width: 150 },
     { field: 'UserName', headerName: 'Username', width: 150 },
     { field: 'FirstName', headerName: 'First Name', width: 150 },
     { field: 'LastName', headerName: 'Last Name', width: 150 },
@@ -90,7 +127,18 @@ const AccountManagement = () => {
     { field: 'Address', headerName: 'Address', width: 200 },
     { field: 'Ranking', headerName: 'Ranking', width: 100 },
     { field: 'DiscountRate', headerName: 'Discount Rate', width: 150 },
-    { field: 'Status', headerName: 'Status', width: 100 },
+    {
+      field: 'Status',
+      headerName: 'Status',
+      width: 100,
+      renderCell: (params) => (
+        <Switch
+          checked={params.value}
+          onChange={() => handleStatusToggle(params.row.UserName, params.value)}
+          color="primary"
+        />
+      ),
+    },
     {
       field: 'actions',
       headerName: 'Actions',
@@ -128,6 +176,12 @@ const AccountManagement = () => {
 
   return (
     <Box sx={{ height: '100vh', width: '100%' }}>
+      <Tabs value={currentTab} onChange={handleTabChange}>
+        <Tab label="All Accounts" />
+        <Tab label="Customers" />
+        <Tab label="Sales Staff" />
+        <Tab label="Shippers" />
+      </Tabs>
       <Button variant="contained" startIcon={<AddIcon />} onClick={() => setOpen(true)} sx={{ marginBottom: "10px" }}>
         Add Account
       </Button>
