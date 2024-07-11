@@ -9,26 +9,29 @@ export default function LoginPage() {
 
   const handleLogin = async (username, password) => {
     try {
-      const response = await axios.post("https://localhost:7292/api/Accounts/login", { username, password });
+      const response = await axios.post(
+        "https://localhost:7292/api/Accounts/login",
+        { username, password }
+      );
       console.log("Full Response data:", response); // Log toàn bộ phản hồi để debug
-  
+
       // Kiểm tra xem phản hồi có chứa dữ liệu và trường Role hay không
       if (!response.data || !response.data.CustomerInfo.Role) {
         console.error("Role is not defined in the response");
         console.error("Response data:", response.data); // Log dữ liệu phản hồi để debug
         return;
       }
-  
+
       localStorage.setItem("username", response.data.CustomerInfo.UserName);
       localStorage.setItem("role", response.data.CustomerInfo.Role);
       console.log("Stored role:", localStorage.getItem("role")); // Thêm để debug
-  
+
       const token = response.data.Token;
       localStorage.setItem("authToken", token);
-  
+
       console.log("Login successful!");
       console.log("User role:", response.data.CustomerInfo.Role); // Thêm để debug
-  
+
       if (response.data.CustomerInfo.Role === "Manager") {
         navigate("/ManagerPage");
       } else if (response.data.CustomerInfo.Role === "SaleStaff") {
@@ -46,7 +49,6 @@ export default function LoginPage() {
       }
     }
   };
-  
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -69,17 +71,15 @@ export default function LoginPage() {
   return (
     <div
       style={{
-        backgroundImage: `url(${"https://wallpaperaccess.com/full/1978236.jpg"})`,
+        backgroundImage: `url(${"https://assets.gtgraphics.de/representations/proxy/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBdVZJIiwiZXhwIjpudWxsLCJwdXIiOiJibG9iX2lkIn19--1e4973e361e4a6de500a30eaadc796c8992852d8/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdCam9MWm05eWJXRjBTU0lJYW5CbkJqb0dSVlE9IiwiZXhwIjpudWxsLCJwdXIiOiJ2YXJpYXRpb24ifX0=--7169841a733ae5073a9c105751b6e0a10336b854/Eternity.jpg"})`,
       }}
       className="relative w-screen h-screen flex flex-col items-center justify-center bg-cover bg-center bg-no-repeat"
     >
       <div className="absolute w-[30vw] h-[60vh] bg-black bg-opacity-50 shadow-red-500/50 shadow-xl rounded-lg">
         <div className="w-full flex items-center justify-center">
-          <img
-            src="https://logos-world.net/wp-content/uploads/2020/06/Cartier-Logo.png"
-            alt=""
-            className="w-[40%]"
-          />
+          <div className="flex justify-around logo">
+            <div className="mt-5 text-[2.6em]">EterniTy</div>
+          </div>
         </div>
         <form onSubmit={handleSubmit}>
           <div className="absolute top-[30%] w-full h-[55%]">

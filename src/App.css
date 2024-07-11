@@ -7,7 +7,9 @@ body {
   padding: 0;
   margin: 0;
 }
-
+.logo {
+  font-family: Le Major;
+}
 .active {
   color: green;
 }
