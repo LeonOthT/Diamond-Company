@@ -17,8 +17,11 @@ import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import BuildIcon from '@mui/icons-material/Build';
 import DiamondIcon from '@mui/icons-material/Diamond';
 import AccountManagement from './AccountManagement';
-import LogoutButton from '../LogoutButton';
 import LogoutIcon from '@mui/icons-material/Logout';
+import LogoutButton from '../LogoutButton';
+import { useNavigate } from 'react-router-dom';
+import { OrderHistory } from './OrderHistory';
+import HistoryIcon from '@mui/icons-material/History';
 
 const Sidebar = styled(Box)(({ theme }) => ({
   height: '100vh',
@@ -237,10 +240,8 @@ const ManagerPage = () => {
   };
 
   const handleLogout = () => {
-    // Perform logout actions such as clearing localStorage or cookies
-    localStorage.clear();
-    // Redirect to login page
-    navigate('/login');
+    localStorage.clear(); // Clear any stored data
+    navigate('/login');   // Navigate to login page
   };
 
   const [rows, setRows] = useState([]);
@@ -385,7 +386,7 @@ const ManagerPage = () => {
       } else {
         setMaterialList((prevList) =>
           prevList.map((item) =>
-            item.materialID === itemId ? { ...item, UnitPrice: editedPrices[itemId], EffectedDate: new Date(editedDates[itemId]).toISOString() } : item
+            item.materialID === itemId ? { ...item, UnitPrice: editedPrices[item.materialID], EffectedDate: new Date(editedDates[item.materialID]).toISOString() } : item
           )
         );
       }
@@ -477,6 +478,8 @@ const ManagerPage = () => {
             </Grid>
           </Grid>
         );
+      case 'Order History':
+        return <OrderHistory/>;
       case 'Diamond Management':
         return (
           <div>
@@ -846,7 +849,14 @@ const ManagerPage = () => {
               <ReceiptIcon />
             </ListItemIcon>
             {sidebarOpen && <ListItemText primary="Dashboard" />}
+          
           </ListItem>
+          <ListItem button onClick={() => setSelectedMenu('Order History')}>
+            <ListItemIcon>
+              <HistoryIcon />
+            </ListItemIcon>
+            {sidebarOpen && <ListItemText primary="Order History" />}
+            </ListItem>
           <ListItem button onClick={() => setSelectedMenu('Diamond Management')}>
             <ListItemIcon>
               <DiamondIcon />
@@ -871,13 +881,9 @@ const ManagerPage = () => {
             </ListItemIcon>
             {sidebarOpen && <ListItemText primary="Account Management" />}
           </ListItem>
-         
-          {/* <ListItemIcon>
-              <LogoutIcon />
-            </ListItemIcon> */}
-          <LogoutButton />
+
+          <LogoutButton sidebarOpen={sidebarOpen} buttonText="Manager Logout" />
         </List>
-        {/* <LogoutButton /> Add the LogoutButton here */}
       </Sidebar>
       <Content sx={{ marginLeft: sidebarOpen ? '250px' : '60px' }}>
         {renderContent()}

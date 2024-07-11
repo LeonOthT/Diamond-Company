@@ -117,9 +117,12 @@ export default function SaleStaffPage() {
           </IconButton>
           <Typography variant="h6" noWrap component="div">
             Sale Orders
-            </Typography>
+          </Typography>
           <Box sx={{ flexGrow: 1 }} />
-          <LogoutButton /> {/* Add the LogoutButton here */}
+          <LogoutButton
+            style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer' }}
+            text="Sale Staff Logout"
+          />
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={open}>
@@ -129,7 +132,7 @@ export default function SaleStaffPage() {
           </IconButton>
         </DrawerHeader>
         <Divider />
-        <List>
+        {/* <List>
           {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
             <ListItem key={text} disablePadding sx={{ display: 'block' }}>
               <ListItemButton
@@ -152,9 +155,9 @@ export default function SaleStaffPage() {
               </ListItemButton>
             </ListItem>
           ))}
-        </List>
+        </List> */}
         <Divider />
-        <List>
+        {/* <List>
           {['All mail', 'Trash', 'Spam'].map((text, index) => (
             <ListItem key={text} disablePadding sx={{ display: 'block' }}>
               <ListItemButton
@@ -177,7 +180,7 @@ export default function SaleStaffPage() {
               </ListItemButton>
             </ListItem>
           ))}
-        </List>
+        </List> */}
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeader />

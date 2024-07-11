@@ -19,7 +19,6 @@ import MailIcon from '@mui/icons-material/Mail';
 import LogoutButton from '../LogoutButton'; // Adjust the path as necessary
 import { Order } from './Order';
 import { CssBaseline, Typography } from '@mui/material';
-import LogoutIcon from '@mui/icons-material/Logout';
 
 const drawerWidth = 240;
 
@@ -49,7 +48,6 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   alignItems: 'center',
   justifyContent: 'flex-end',
   padding: theme.spacing(0, 1),
-  // necessary for content to be below app bar
   ...theme.mixins.toolbar,
 }));
 
@@ -118,10 +116,13 @@ export default function DeliStaffPage() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div">
-            Orders
-            </Typography>
+            Delivery Orders
+          </Typography>
           <Box sx={{ flexGrow: 1 }} />
-          <LogoutButton /> {/* Add the LogoutButton here */}
+          <LogoutButton
+            style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer' }}
+            text="Delivery Staff Logout"
+          />
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={open}>

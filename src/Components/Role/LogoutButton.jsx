@@ -1,9 +1,8 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ListItem, ListItemIcon, ListItemText, Button } from '@mui/material';
-import LogoutIcon from '@mui/icons-material/Logout';
+import Button from '@mui/material/Button';
 
-const LogoutButton = ({ sidebarOpen }) => {
+const LogoutButton = ({ style, text }) => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -14,12 +13,9 @@ const LogoutButton = ({ sidebarOpen }) => {
   };
 
   return (
-    <ListItem button onClick={handleLogout} sx={{ width: '100%' }}>
-      <ListItemIcon>
-        <LogoutIcon />
-      </ListItemIcon>
-      {sidebarOpen && <ListItemText primary="Logout" />}
-    </ListItem>
+    <Button onClick={handleLogout} style={style}>
+      {text || 'Logout'}
+    </Button>
   );
 };
 

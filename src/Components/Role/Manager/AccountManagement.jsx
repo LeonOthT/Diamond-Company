@@ -9,7 +9,7 @@ const AccountManagement = () => {
   const [open, setOpen] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [formValues, setFormValues] = useState({
-    AccountId: '',
+
     Username: '',
     FirstName: '',
     LastName: '',
@@ -52,11 +52,18 @@ const AccountManagement = () => {
     setFormValues({ ...formValues, [name]: value });
   };
 
-  const handleSaveClickAccount = () => {
+  const handleSaveClickAccount = async () => {
     if (isEdit) {
       setRows(rows.map(row => row.AccountId === formValues.AccountId ? formValues : row));
     } else {
-      setRows([...rows, { ...formValues, AccountId: Date.now().toString() }]);
+      try {
+        const response = await axios.post('https://localhost:7292/api/Accounts/RegisterStaff', formValues);
+        if (response.status === 200) {
+          setRows([...rows, { ...formValues, AccountId: response.data.AccountId }]);
+        }
+      } catch (error) {
+        console.error('Error saving account:', error);
+      }
     }
     setOpen(false);
   };
@@ -65,7 +72,7 @@ const AccountManagement = () => {
     setOpen(false);
     setIsEdit(false);
     setFormValues({
-      AccountId: '',
+
       Username: '',
       FirstName: '',
       LastName: '',
@@ -114,7 +121,7 @@ const AccountManagement = () => {
       console.error('Error updating account status:', error);
     }
   };
-  
+
   const columns = [
     { field: 'UserName', headerName: 'Username', width: 150 },
     { field: 'FirstName', headerName: 'First Name', width: 150 },
@@ -134,34 +141,34 @@ const AccountManagement = () => {
       renderCell: (params) => (
         <Switch
           checked={params.value}
-          onChange={() => handleStatusToggle(params.row.UserName, params.value)}
+          onChange={() => handleStatusToggle(params.row.Username, params.value)}
           color="primary"
         />
       ),
     },
-    {
-      field: 'actions',
-      headerName: 'Actions',
-      width: 200,
-      renderCell: (params) => (
-        <div>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => handleEditClick(params.row)}
-          >
-            Edit
-          </Button>
-          <Button
-            variant="contained"
-            color="secondary"
-            onClick={() => handleDeleteClick(params.row)}
-          >
-            Delete
-          </Button>
-        </div>
-      ),
-    },
+    // {
+    //   field: 'actions',
+    //   headerName: 'Actions',
+    //   width: 200,
+    //   renderCell: (params) => (
+    //     <div>
+    //       <Button
+    //         variant="contained"
+    //         color="primary"
+    //         onClick={() => handleEditClick(params.row)}
+    //       >
+    //         Edit
+    //       </Button>
+    //       <Button
+    //         variant="contained"
+    //         color="secondary"
+    //         onClick={() => handleDeleteClick(params.row)}
+    //       >
+    //         Delete
+    //       </Button>
+    //     </div>
+    //   ),
+    // },
   ];
 
   const handleEditClick = (row) => {
@@ -202,7 +209,7 @@ const AccountManagement = () => {
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>{isEdit ? 'Edit Account' : 'Add Account'}</DialogTitle>
         <DialogContent>
-          <TextField
+          {/* <TextField
             margin="dense"
             name="AccountId"
             label="Account ID"
@@ -212,7 +219,7 @@ const AccountManagement = () => {
             value={formValues.AccountId}
             onChange={handleInputChange}
             disabled={isEdit}
-          />
+          /> */}
           <TextField
             margin="dense"
             name="Username"
@@ -220,7 +227,17 @@ const AccountManagement = () => {
             type="text"
             fullWidth
             variant="outlined"
-            value={formValues.Username}
+            value={formValues.UserName}
+            onChange={handleInputChange}
+          />
+          <TextField
+            margin="dense"
+            name="Password"
+            label="Password"
+            type="password"
+            fullWidth
+            variant="outlined"
+            value={formValues.Password}
             onChange={handleInputChange}
           />
           <TextField
@@ -233,6 +250,8 @@ const AccountManagement = () => {
             value={formValues.FirstName}
             onChange={handleInputChange}
           />
+          
+
           <TextField
             margin="dense"
             name="LastName"
@@ -305,37 +324,17 @@ const AccountManagement = () => {
             value={formValues.Address}
             onChange={handleInputChange}
           />
-          <TextField
-            margin="dense"
-            name="Ranking"
-            label="Ranking"
-            type="text"
-            fullWidth
-            variant="outlined"
-            value={formValues.Ranking}
-            onChange={handleInputChange}
-          />
-          <TextField
-            margin="dense"
-            name="DiscountRate"
-            label="Discount Rate"
-            type="number"
-            fullWidth
-            variant="outlined"
-            value={formValues.DiscountRate}
-            onChange={handleInputChange}
-          />
-          <FormControl fullWidth margin="dense">
-            <InputLabel>Status</InputLabel>
+          {/* <FormControl fullWidth margin="dense">
+            <InputLabel>Role</InputLabel>
             <Select
-              name="Status"
-              value={formValues.Status}
+              name="Role"
+              value={formValues.Role}
               onChange={handleInputChange}
             >
-              <MenuItem value={true}>Active</MenuItem>
-              <MenuItem value={false}>Inactive</MenuItem>
+              <MenuItem value="SaleStaff">SaleStaff</MenuItem>
+              <MenuItem value="Shipper">Shipper</MenuItem>
             </Select>
-          </FormControl>
+          </FormControl> */}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">
