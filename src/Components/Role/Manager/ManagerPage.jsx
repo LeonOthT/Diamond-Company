@@ -17,6 +17,8 @@ import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import BuildIcon from '@mui/icons-material/Build';
 import DiamondIcon from '@mui/icons-material/Diamond';
 import AccountManagement from './AccountManagement';
+import LogoutButton from '../LogoutButton';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 const Sidebar = styled(Box)(({ theme }) => ({
   height: '100vh',
@@ -234,6 +236,13 @@ const ManagerPage = () => {
     setEditedDates({ [item.Id || item.materialID]: new Date(item.EffDate || item.EffectedDate || Date.now()).toISOString().split('T')[0] });
   };
 
+  const handleLogout = () => {
+    // Perform logout actions such as clearing localStorage or cookies
+    localStorage.clear();
+    // Redirect to login page
+    navigate('/login');
+  };
+
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -284,26 +293,26 @@ const ManagerPage = () => {
 
   const handleSaveClickProduct = async () => {
     const updatedValues = {};
-  
+
     for (const key in formValues) {
       if (formValues[key] !== originalValues[key]) {
         updatedValues[key] = formValues[key];
       }
     }
-  
+
     // Log form values and updated values for debugging
     console.log("Form Values:", formValues);
     console.log("Original Values:", originalValues);
     console.log("Updated Values:", updatedValues);
-  
-    
-  
+
+
+
     let url;
     try {
       url = isEdit
         ? `https://localhost:7292/api/Products/UpdateProduct/${formValues.ProductId}`
         : 'https://localhost:7292/api/Products/CreateProduct';
-  
+
       const response = await axios({
         method: isEdit ? 'put' : 'post',
         url: url,
@@ -312,12 +321,12 @@ const ManagerPage = () => {
           'Content-Type': 'application/json',
         },
       });
-  
+
       setOpen(false);
       fetchData();
     } catch (error) {
       console.log('Response:', error.response);
-  
+
       if (error.response) {
         console.error('Error response from server:', error.response.data); // Log detailed server error
         alert(`Error: ${JSON.stringify(error.response.data.errors, null, 2)}`); // Display error details
@@ -327,8 +336,8 @@ const ManagerPage = () => {
       }
     }
   };
-  
-  
+
+
 
   const handleClose = () => {
     setOpen(false);
@@ -408,7 +417,7 @@ const ManagerPage = () => {
                     },
                     labels: ['Man', 'Women'],
                   }}
-                  series={[60, 40]} 
+                  series={[60, 40]}
                   type="donut"
                 />
               </Card>
@@ -802,14 +811,14 @@ const ManagerPage = () => {
 
           </Box >
         );
-      
+
       case 'Account Management':
         return <AccountManagement />;
 
 
 
-      
-        default:
+
+      default:
         return null;
     }
   };
@@ -858,23 +867,17 @@ const ManagerPage = () => {
           </ListItem>
           <ListItem button onClick={() => setSelectedMenu('Account Management')}>
             <ListItemIcon>
-              < ManageAccountsIcon />
+              <GroupIcon />
             </ListItemIcon>
             {sidebarOpen && <ListItemText primary="Account Management" />}
           </ListItem>
-          <ListItem button>
-            <ListItemIcon>
-              <GroupIcon />
-            </ListItemIcon>
-            {sidebarOpen && <ListItemText primary="Accounts" />}
-          </ListItem>
-          <ListItem button>
-            <ListItemIcon>
-              <GroupIcon />
-            </ListItemIcon>
-            {sidebarOpen && <ListItemText primary="Payroll" />}
-          </ListItem>
+         
+          {/* <ListItemIcon>
+              <LogoutIcon />
+            </ListItemIcon> */}
+          <LogoutButton />
         </List>
+        {/* <LogoutButton /> Add the LogoutButton here */}
       </Sidebar>
       <Content sx={{ marginLeft: sidebarOpen ? '250px' : '60px' }}>
         {renderContent()}

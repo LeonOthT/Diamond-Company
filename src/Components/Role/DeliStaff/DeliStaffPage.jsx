@@ -1,35 +1,25 @@
-import * as React from 'react';
+import React from 'react';
 import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import MuiDrawer from '@mui/material/Drawer';
 import MuiAppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
-import List from '@mui/material/List';
-import CssBaseline from '@mui/material/CssBaseline';
-import Typography from '@mui/material/Typography';
-import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import List from '@mui/material/List';
+import Divider from '@mui/material/Divider';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
-import { Select, MenuItem, TextField } from '@mui/material';
+import LogoutButton from '../LogoutButton'; // Adjust the path as necessary
 import { Order } from './Order';
-
-
-
-
-
-const initialRows = [
-  { id: 1, Customer: 'John Doe', OrderDate: '2023-01-01', TotalPrice: 100,  StaffID: 101, ShipStatus: 'Shipped' },
-  { id: 2, Customer: 'Jane Smith', OrderDate: '2023-01-03', TotalPrice: 200, StaffID: 102,  ShipStatus: 'Pending' },
-  { id: 3, Customer: 'Sam Johnson', OrderDate: '2023-01-05', TotalPrice: 300,  StaffID: 103,  ShipStatus: 'Delivered' }
-];
+import { CssBaseline, Typography } from '@mui/material';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 const drawerWidth = 240;
 
@@ -99,16 +89,6 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 );
 
 export default function DeliStaffPage() {
-  
-  const [rows, setRows] = React.useState(initialRows);
-  const [searchDate, setSearchDate] = React.useState('');
-  const filteredRows = rows.filter((row) => {
-    return row.OrderDate.includes(searchDate);
-  });
-
-  const handleStatusChange = (id, newStatus) => {
-    setRows(rows.map(row => (row.id === id ? { ...row, ShipStatus: newStatus } : row)));
-  };
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
 
@@ -139,7 +119,9 @@ export default function DeliStaffPage() {
           </IconButton>
           <Typography variant="h6" noWrap component="div">
             Orders
-          </Typography>
+            </Typography>
+          <Box sx={{ flexGrow: 1 }} />
+          <LogoutButton /> {/* Add the LogoutButton here */}
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={open}>
@@ -201,7 +183,7 @@ export default function DeliStaffPage() {
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeader />
-            <Order />
+        <Order />
       </Box>
     </Box>
   );
