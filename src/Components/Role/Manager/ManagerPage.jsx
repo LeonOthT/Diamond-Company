@@ -179,6 +179,39 @@ const ManagerPage = () => {
     }
   };
 
+  const [employeesData, setEmployeesData] = useState({});
+  const [totalOrders, setTotalOrders] = useState(0);
+  const [totalRevenue, setTotalRevenue] = useState(0);
+
+  useEffect(() => {
+    // Fetch employees data
+    axios.get('https://localhost:7292/api/Accounts/NumberOfEmployee')
+      .then(response => {
+        setEmployeesData(response.data);
+      })
+      .catch(error => {
+        console.error('There was an error fetching the employees data!', error);
+      });
+
+    // Fetch total orders
+    axios.get('https://localhost:7292/api/Order/GetSumOrderbyMonthAndYear')
+      .then(response => {
+        setTotalOrders(response.data);
+      })
+      .catch(error => {
+        console.error('There was an error fetching the total orders data!', error);
+      });
+
+    // Fetch total revenue
+    axios.get('https://localhost:7292/api/Order/GetRevenue')
+      .then(response => {
+        setTotalRevenue(response.data);
+      })
+      .catch(error => {
+        console.error('There was an error fetching the total revenue data!', error);
+      });
+  }, []);
+
   const handleEditClickProduct = (row) => {
     setIsEdit(true);
     setFormValues(row);
@@ -391,83 +424,77 @@ const ManagerPage = () => {
       case 'Dashboard':
         return (
           <Grid container spacing={3}>
-            <Grid item xs={12} md={6}>
-              <Card>
-                <Typography variant="h6">Employees Info</Typography>
-                <Chart options={data.options} series={data.series} type="line" />
-              </Card>
-            </Grid>
-            <Grid item xs={12} md={3}>
-              <Card>
-                <Typography variant="h6">Total Employees</Typography>
-                <Typography variant="h4">423</Typography>
-                <Chart
-                  options={{
-                    chart: {
-                      type: 'donut',
-                    },
-                    labels: ['Man', 'Women'],
-                  }}
-                  series={[60, 40]} 
-                  type="donut"
-                />
-              </Card>
-            </Grid>
-            <Grid item xs={12} md={3}>
-              <Card>
-                <Typography variant="h6">Applications</Typography>
-                <Typography variant="h4">1546</Typography>
-              </Card>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <Card>
-                <Typography variant="h6">Employees Availability</Typography>
-                <List>
-                  <ListItem>
-                    <ListItemText primary="Attendance" />
-                    <Typography variant="body2">400</Typography>
-                  </ListItem>
-                  <ListItem>
-                    <ListItemText primary="Late Coming" />
-                    <Typography variant="body2">17</Typography>
-                  </ListItem>
-                  <ListItem>
-                    <ListItemText primary="Absent" />
-                    <Typography variant="body2">6</Typography>
-                  </ListItem>
-                  <ListItem>
-                    <ListItemText primary="Leave Apply" />
-                    <Typography variant="body2">14</Typography>
-                  </ListItem>
-                </List>
-              </Card>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <Card>
-                <Typography variant="h6">Top Hiring Sources</Typography>
-              </Card>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <Card>
-                <Typography variant="h6">Upcoming Interviews</Typography>
-                <List>
-                  <ListItem>
-                    <Avatar src="/broken-image.jpg" />
-                    <ListItemText primary="Natalie Gibson" secondary="1.30 - 1.30 (Ui/UX Designer)" />
-                  </ListItem>
-                  <ListItem>
-                    <Avatar src="/broken-image.jpg" />
-                    <ListItemText primary="Peter Piperg" secondary="9.00 - 1.30 (Web Design)" />
-                  </ListItem>
-                  <ListItem>
-                    <Avatar src="/broken-image.jpg" />
-                    <ListItemText primary="Robert Young" secondary="1.30 - 2.30" />
-                  </ListItem>
-                </List>
-              </Card>
-            </Grid>
-          </Grid>
-        );
+      <Grid item xs={12} md={6}>
+        <Card>
+          <Typography variant="h6">Total Employees</Typography>
+          <Typography variant="body1">Staffs: {employeesData.NumberOfStaffs}</Typography>
+          <Typography variant="body1">Sales: {employeesData.NumberOfSales}</Typography>
+          <Typography variant="body1">Shippers: {employeesData.NumberOfShippers}</Typography>
+        </Card>
+      </Grid>
+      <Grid item xs={12} md={6}>
+        <Card>
+          <Typography variant="h6">Total Orders</Typography>
+          <Typography variant="h4">{totalOrders}</Typography>
+        </Card>
+      </Grid>
+      <Grid item xs={12} md={6}>
+        <Card>
+          <Typography variant="h6">Total Revenue</Typography>
+          <Typography variant="h4">{totalRevenue}</Typography>
+        </Card>
+      </Grid>
+      <Grid item xs={12} md={6}>
+        {/* <Card>
+          <Typography variant="h6">Employees Availability</Typography>
+          <List>
+            <ListItem>
+              <ListItemText primary="Attendance" />
+              <Typography variant="body2">400</Typography>
+            </ListItem>
+            <ListItem>
+              <ListItemText primary="Late Coming" />
+              <Typography variant="body2">17</Typography>
+            </ListItem>
+            <ListItem>
+              <ListItemText primary="Absent" />
+              <Typography variant="body2">6</Typography>
+            </ListItem>
+            <ListItem>
+              <ListItemText primary="Leave Apply" />
+              <Typography variant="body2">14</Typography>
+            </ListItem>
+          </List>
+        </Card> */}
+      </Grid>
+      <Grid item xs={12} md={6}>
+        {/* <Card>
+          <Typography variant="h6">Top Hiring Sources</Typography>
+        </Card> */}
+      </Grid>
+      <Grid item xs={12} md={6}>
+        {/* <Card>
+          <Typography variant="h6">Upcoming Interviews</Typography>
+          <List>
+            <ListItem>
+              <Avatar src="/broken-image.jpg" />
+              <ListItemText primary="Natalie Gibson" secondary="1.30 - 1.30 (Ui/UX Designer)" />
+            </ListItem>
+            <ListItem>
+              <Avatar src="/broken-image.jpg" />
+              <ListItemText primary="Peter Piperg" secondary="9.00 - 1.30 (Web Design)" />
+            </ListItem>
+            <ListItem>
+              <Avatar src="/broken-image.jpg" />
+              <ListItemText primary="Robert Young" secondary="1.30 - 2.30" />
+            </ListItem>
+          </List>
+        </Card> */}
+      </Grid>
+    </Grid>
+  );
+      case 'Order History':
+        return <OrderHistory/>;
       case 'Diamond Management':
         return (
           <div>
