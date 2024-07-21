@@ -190,7 +190,7 @@ const ManagerPage = () => {
 
   useEffect(() => {
     // Fetch employees data
-    axios.get('https://localhost:7292/api/Accounts/NumberOfEmployee')
+    axios.get('https://localhost:7292/api/Accounts/AccountCount')
       .then(response => {
         setEmployeesData(response.data);
       })
@@ -285,7 +285,7 @@ const ManagerPage = () => {
     try {
       const response = await fetch('https://localhost:7292/api/Products');
       const data = await response.json();
-      const formattedData = data
+      const formattedData = data.Products
         .map((item) => ({
           id: item.ProductId,
           CategoryID: item.CategoryID,
@@ -309,7 +309,7 @@ const ManagerPage = () => {
           ProductSize: item.ProductSize,
           Image: item.Image,
           Status: item.Status ? 'Available' : 'Unavailable',
-          UnitSizePrice: item.UnitSizePrice,
+          UnitSizePrice: item.UnitSizePrice ,
           Gender: item.Gender,
           ProductPrice: item.ProductPrice,
         }));
